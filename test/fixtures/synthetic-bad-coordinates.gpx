@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SYNTHETIC TEST FIXTURE: a GPX file with an out-of-range latitude on its third point. It must be refused whole. -->
+<gpx version="1.1" creator="unmap-tests" xmlns="http://www.topografix.com/GPX/1/1">
+  <trk>
+    <trkseg>
+      <trkpt lat="51.1800" lon="-115.5700"/>
+      <trkpt lat="51.1810" lon="-115.5680"/>
+      <trkpt lat="151.1825" lon="-115.5660"/>
+      <trkpt lat="51.1840" lon="-115.5645"/>
+    </trkseg>
+  </trk>
+</gpx>

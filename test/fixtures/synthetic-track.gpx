@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SYNTHETIC TEST FIXTURE: invented points, not a real track. Used by test/gpx.test.ts and the e2e smoke test only. -->
+<gpx version="1.1" creator="unmap-tests" xmlns="http://www.topografix.com/GPX/1/1">
+  <metadata><name>Synthetic test walk</name></metadata>
+  <wpt lat="51.1800" lon="-115.5700"><name>Synthetic start</name></wpt>
+  <trk>
+    <name>Synthetic track</name>
+    <trkseg>
+      <trkpt lat="51.1800" lon="-115.5700"><ele>1380</ele></trkpt>
+      <trkpt lat="51.1810" lon="-115.5680"><ele>1395</ele></trkpt>
+      <trkpt lat="51.1825" lon="-115.5660"><ele>1410</ele></trkpt>
+      <trkpt lat="51.1840" lon="-115.5645"><ele>1432</ele></trkpt>
+      <trkpt lat="51.1858" lon="-115.5630"><ele>1450</ele></trkpt>
+      <trkpt lat="51.1870" lon="-115.5610"><ele>1470</ele></trkpt>
+    </trkseg>
+  </trk>
+</gpx>
