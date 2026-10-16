@@ -65,7 +65,7 @@ export function checkLicence(pkg: CkanPackage): Licence {
   if (pkg.license_id !== OGL_LICENCE_ID) {
     throw new Error(
       `The dataset's licence is "${pkg.license_title ?? "unknown"}" (license_id "${pkg.license_id ?? "none"}"), not the Open Government Licence - Canada ("${OGL_LICENCE_ID}"). ` +
-        "Its redistribution terms have to be checked by a person before this demo ships it, so nothing was fetched.",
+        "Its redistribution terms have to be checked by a person before this app ships it, so nothing was fetched.",
     );
   }
   return { id: pkg.license_id, title: pkg.license_title?.trim() || "Open Government Licence - Canada", url: pkg.license_url?.trim() || "https://open.canada.ca/en/open-government-licence-canada" };

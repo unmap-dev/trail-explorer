@@ -1,5 +1,5 @@
 /**
- * From the source's segments to the demo's 10–20 trails: group segments by name, join them into
+ * From the source's segments to the app's 10–20 trails: group segments by name, join them into
  * continuous lines, keep day-hike lengths, choose which trails to ship, and write each one with
  * its provenance and the method behind every number. Pure functions, used by
  * `scripts/fetch-trails.mjs` and unit-tested in test/curate.test.ts against synthetic fixtures.

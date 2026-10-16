@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /**
- * Fetch the trail collection this demo ships: data/trails.geojson, from Parks Canada's "Trails
+ * Fetch the trail collection this app ships: data/trails.geojson, from Parks Canada's "Trails
  * APCA" dataset on the Open Government Portal. No dependencies; Node 22.18+ (type stripping runs
  * the pure helpers in lib/ directly).
  *
- *   node scripts/fetch-trails.mjs                      # from demos/trails, or from the repo root
+ *   node scripts/fetch-trails.mjs                      # from apps/trail-explorer, or from the repo root
  *   UNMAP_API_KEY=um_live_… node scripts/fetch-trails.mjs   # also measure climb with Unmap Elevation
  *
  * What it does, in order, and stops at the first step that fails:
@@ -76,8 +76,8 @@ const ELEVATION_CHUNK = 500;
 // does not look like a browser, so the CKAN record is retried with the browser-compatible form.
 // Neither may contain "unmap": open.canada.ca's firewall rejects any user agent containing "nmap"
 // (the port scanner) with an HTML "Request Rejected" page, and "unmap" contains it.
-const UA = "demo-trails/1.0";
-const BROWSER_UA = "Mozilla/5.0 (compatible; demo-trails/1.0)";
+const UA = "trail-explorer/1.0";
+const BROWSER_UA = "Mozilla/5.0 (compatible; trail-explorer/1.0)";
 
 const log = (...a) => console.log(...a);
 

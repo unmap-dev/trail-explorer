@@ -7,19 +7,19 @@ import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetT
 import { CONTACT_URL, SIGNUP_URL } from "./config";
 import { CopyCommand } from "./copy-command";
 import type { Lang } from "./i18n";
-import type { DemoManifest } from "./provenance";
+import type { AppManifest } from "./provenance";
 import { ProvenanceBadge } from "./provenance-badge";
 import { KIT_TEXT } from "./strings";
 
 const REGISTRY_DOCS = "https://unmap.dev/docs/frontend/components";
 
 /**
- * The "Built with Unmap" panel (spec §10): which services the demo uses and what each contributes,
+ * The "Built with Unmap" panel (spec §10): which services the app uses and what each contributes,
  * the SDK calls behind them, the registry components on screen with their install commands, every
  * non-live thing on screen with its source, and the way out to the code, a key and help. Kept in a
  * sheet so the app itself stays a clean customer-style interface.
  */
-export function BuiltWith({ manifest, lang }: { manifest: DemoManifest; lang: Lang }) {
+export function BuiltWith({ manifest, lang }: { manifest: AppManifest; lang: Lang }) {
   const t = KIT_TEXT[lang];
   return (
     <Sheet>

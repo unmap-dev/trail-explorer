@@ -5,7 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Trails · hiking explorer · Unmap demo",
+  title: "Trail Explorer · Unmap app",
   description: "A hiking trail explorer built with Unmap and the Unmap component registry: Parks Canada open trail data around Banff, elevation profiles, GPX import and road directions to trailheads.",
 };
 

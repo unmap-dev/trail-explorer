@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
-// `BASE_PATH` is empty when the demo runs on its own (`pnpm dev`, your own deploy) and `/trails`
-// when apps/demos builds it into apps.unmap.dev. It is also handed to the browser, where the kit
+// `BASE_PATH` is empty when the app runs on its own (`pnpm dev`, your own deploy) and `/trail-explorer`
+// when apps/apps-host builds it into apps.unmap.dev. It is also handed to the browser, where the kit
 // uses it for the MapLibre worker URL.
 const basePath = process.env.BASE_PATH ?? "";
 

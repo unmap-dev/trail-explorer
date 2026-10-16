@@ -450,7 +450,10 @@ export function MapControls({
                       size="icon"
                       aria-label={control.label}
                       aria-pressed={control.pressed}
-                      className="aria-pressed:bg-muted aria-pressed:text-foreground"
+                      // The popover surface, not the outline variant's own ground: in dark mode
+                      // that is a 30% wash of --input, made to sit on the page background. Over a
+                      // map there is none, and the buttons read as transparent.
+                      className="bg-popover text-popover-foreground hover:bg-muted dark:bg-popover dark:hover:bg-muted aria-pressed:bg-muted aria-pressed:text-foreground"
                       aria-busy={control.busy || undefined}
                       disabled={control.disabled}
                       onClick={control.run}

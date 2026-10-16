@@ -7,7 +7,7 @@ import { SIGNUP_URL } from "./config";
 import type { Lang } from "./i18n";
 import { KIT_TEXT } from "./strings";
 
-/** What a demo shows instead of calling the API when no key is configured. */
+/** What an app shows instead of calling the API when no key is configured. */
 export function MissingKey({ lang }: { lang: Lang }) {
   const t = KIT_TEXT[lang];
   return (

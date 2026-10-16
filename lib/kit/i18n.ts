@@ -1,4 +1,4 @@
-/** The two languages every demo ships in. */
+/** The two languages every app ships in. */
 export type Lang = "en" | "fr";
 
 export const LANGS: readonly Lang[] = ["en", "fr"];

@@ -1,6 +1,6 @@
 # Features
 
-What Trails does, which Unmap API does it, and what it deliberately does not do (spec §6).
+What Trail Explorer does, which Unmap API does it, and what it deliberately does not do (spec §6).
 
 ## Implemented
 

@@ -35,7 +35,7 @@ export function useLang(): [Lang, (lang: Lang) => void] {
 
 /**
  * The tab title, kept in the page's language. Next mounts the layout's metadata `<title>` in a
- * later commit than a demo's first effects, which writes the English title back over a French
+ * later commit than an app's first effects, which writes the English title back over a French
  * one, so the title is put back whenever the head changes for as long as the page is open.
  */
 export function useDocumentTitle(title: string): void {

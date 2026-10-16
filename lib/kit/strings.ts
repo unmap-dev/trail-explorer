@@ -1,11 +1,11 @@
 import type { Lang } from "./i18n";
 
-/** The kit's own words. A demo's words live in the demo. */
+/** The kit's own words. An app's words live in the app. */
 export const KIT_TEXT = {
   en: {
     builtWith: "Built with Unmap",
     builtWithTitle: "Built with Unmap",
-    pageTitle: "{name} · Unmap demo",
+    pageTitle: "{name} · Unmap app",
     builtWithIntro: "What this app asks the Unmap API for, and what it does with the answers. Everything else on screen is labelled.",
     services: "Unmap services",
     calls: "SDK calls",
@@ -23,14 +23,14 @@ export const KIT_TEXT = {
     live: "Live from Unmap",
     dataset: "Open dataset",
     language: "Language",
-    missingKeyTitle: "This demo needs an Unmap API key",
+    missingKeyTitle: "This app needs an Unmap API key",
     missingKeyBody: "Set NEXT_PUBLIC_UNMAP_KEY to a browser key from your Unmap dashboard, then restart the dev server. Copy .env.example to .env.local to start.",
     retry: "Try again",
   },
   fr: {
     builtWith: "Conçu avec Unmap",
     builtWithTitle: "Conçu avec Unmap",
-    pageTitle: "{name} · démo Unmap",
+    pageTitle: "{name} · application Unmap",
     builtWithIntro: "Ce que cette application demande à l'API Unmap et ce qu'elle fait des réponses. Tout le reste à l'écran est indiqué.",
     services: "Services Unmap",
     calls: "Appels du SDK",
@@ -48,7 +48,7 @@ export const KIT_TEXT = {
     live: "En direct d'Unmap",
     dataset: "Jeu de données ouvert",
     language: "Langue",
-    missingKeyTitle: "Cette démo a besoin d'une clé d'API Unmap",
+    missingKeyTitle: "Cette application a besoin d'une clé d'API Unmap",
     missingKeyBody: "Définissez NEXT_PUBLIC_UNMAP_KEY avec une clé de navigateur de votre tableau de bord Unmap, puis redémarrez le serveur de développement. Copiez .env.example vers .env.local pour commencer.",
     retry: "Réessayer",
   },

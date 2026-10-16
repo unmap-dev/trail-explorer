@@ -1,12 +1,12 @@
-import type { DemoManifest } from "@/lib/kit/provenance";
+import type { AppManifest } from "@/lib/kit/provenance";
 
 /**
- * What the "Built with Unmap" panel and the header say about Trails. Lists only what the app really
+ * What the "Built with Unmap" panel and the header say about Trail Explorer. Lists only what the app really
  * calls; a service is added here in the same change that starts calling it.
  */
-export const MANIFEST: DemoManifest = {
-  slug: "trails",
-  name: { en: "Trails · hiking explorer", fr: "Trails · explorateur de randonnées" },
+export const MANIFEST: AppManifest = {
+  slug: "trail-explorer",
+  name: { en: "Trail Explorer", fr: "Explorateur de sentiers" },
   tagline: {
     en: "Day hikes around Banff and Lake Louise on a live Unmap outdoor map, with elevation profiles.",
     fr: "Randonnées d'un jour autour de Banff et de Lake Louise sur une carte plein air Unmap en direct, avec profils d'altitude.",

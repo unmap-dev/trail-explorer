@@ -1,6 +1,6 @@
 import type { Lang } from "./i18n";
 
-/** What went wrong, in terms a demo can act on. */
+/** What went wrong, in terms an app can act on. */
 export type ApiProblemKind = "key" | "addon" | "bad-request" | "not-found" | "coverage" | "rate" | "unavailable" | "network" | "unknown";
 
 export interface ApiProblem {
@@ -65,7 +65,7 @@ function kindOf(status: number, code: string | undefined): ApiProblemKind {
 }
 
 /**
- * An SDK error (or anything thrown) as a problem a demo can show: the gateway's own message as the
+ * An SDK error (or anything thrown) as a problem an app can show: the gateway's own message as the
  * detail when it sent one, a sentence in the reader's language otherwise. Never invents a result.
  */
 export function describeError(error: unknown, lang: Lang): ApiProblem {
@@ -86,7 +86,7 @@ export function describeError(error: unknown, lang: Lang): ApiProblem {
   };
 }
 
-/** Whether an error is only a cancelled request, which a demo ignores rather than shows. */
+/** Whether an error is only a cancelled request, which an app ignores rather than shows. */
 export function isAbort(error: unknown): boolean {
   return !!error && typeof error === "object" && (error as { name?: unknown }).name === "AbortError";
 }

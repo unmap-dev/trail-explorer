@@ -1,10 +1,10 @@
-# Trails: a hiking explorer built with Unmap
+# Trail Explorer, built with Unmap
 
 Day hikes around Banff and Lake Louise on a live outdoor map with hillshade and contours: search
 and filter the trails, choose one for its length, climb and an interactive elevation profile
 synced with the map, open your own GPX file, get road directions to the trailhead, and share a
-link to the trail. Part of the [Unmap demo suite](https://unmap.dev/demos); live at
-[apps.unmap.dev/trails](https://apps.unmap.dev/trails).
+link to the trail. One of the [Unmap apps](https://unmap.dev/apps); live at
+[apps.unmap.dev/trail-explorer](https://apps.unmap.dev/trail-explorer/).
 
 The trails are **real open data**: Parks Canada's *Trails APCA* dataset, used under the Open
 Government Licence - Canada and fetched by a script that checks that licence first (see
@@ -12,8 +12,8 @@ Government Licence - Canada and fetched by a script that checks that licence fir
 live Unmap. Nothing is invented: until the data has been fetched the app says so and shows no
 trails.
 
-> Trail conditions and closures are not shown, and the data may be incomplete. This is a demo,
-> not a navigation or safety tool.
+> Trail conditions and closures are not shown, and the data may be incomplete. This is a starter
+> app, not a navigation or safety tool.
 
 ## Run it
 
@@ -57,7 +57,7 @@ what, and writes `data/trails.geojson` plus the trail table in `DATA_SOURCES.md`
 if a field was guessed wrong, set `TRAILS_NAME_FIELD` (or `_NAME_FR_`, `_AREA_`, `_DIFFICULTY_`,
 `_SYSTEM_FIELD`) and run it again. Then look at the trails in the app before you commit.
 
-Run it from your own machine. The script identifies itself as `demo-trails/1.0`, never with
+Run it from your own machine. The script identifies itself as `trail-explorer/1.0`, never with
 "unmap" in it: open.canada.ca's firewall answers any user agent containing "nmap" (the port
 scanner) with an HTML "Request Rejected" page, and "unmap" contains it.
 
@@ -95,7 +95,7 @@ Two ways:
 app/page.tsx                 the one page; renders the app in the browser
 components/trails/           the app: notice, filters, list, details, directions, GPX import, map pane
 components/ui/  lib/map-*    Unmap registry components and shadcn primitives, copied in unmodified
-lib/kit/                     the Unmap demo kit (header, Built with Unmap panel, errors, en/fr), copied in
+lib/kit/                     the Unmap app kit (header, Built with Unmap panel, errors, en/fr), copied in
 hooks/                       loading the trail file; road directions (one hook per call)
 lib/trails.ts                the trail model and its validator (no React, no fetch)
 lib/filters.ts               search and filters, offered only when the data can answer them

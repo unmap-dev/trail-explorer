@@ -15,7 +15,7 @@ import { availableFilters, filterTrails, NO_FILTERS, type Filters } from "@/lib/
 import { lineLength } from "@/lib/geo";
 import { longestLine, type GpxTrack } from "@/lib/gpx";
 import { API_KEY, GATEWAY } from "@/lib/kit/config";
-import { DemoHeader } from "@/lib/kit/demo-header";
+import { AppHeader } from "@/lib/kit/app-header";
 import { format, formatNumber, type Lang } from "@/lib/kit/i18n";
 import { MissingKey } from "@/lib/kit/missing-key";
 import { useLang } from "@/lib/kit/use-lang";
@@ -164,7 +164,7 @@ export function TrailsApp() {
 
   return (
     <div className="flex h-dvh flex-col">
-      <DemoHeader manifest={MANIFEST} lang={lang} onLang={setLang} />
+      <AppHeader manifest={MANIFEST} lang={lang} onLang={setLang} />
       <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
         <aside className="order-last flex min-h-0 flex-1 flex-col overflow-y-auto border-t lg:order-first lg:w-[420px] lg:flex-none lg:border-t-0 lg:border-r">
           <div className="flex flex-col gap-3 p-3">

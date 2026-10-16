@@ -1,6 +1,6 @@
 # Licence of the trail data
 
-This licence covers **`data/trails.geojson` only**. The demo's code is MIT (see the README); the
+This licence covers **`data/trails.geojson` only**. The app's code is MIT (see the README); the
 two are separate.
 
 `data/trails.geojson` is derived from **Parks Canada, Trails APCA**, published on the Government of

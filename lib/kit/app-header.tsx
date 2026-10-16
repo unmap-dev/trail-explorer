@@ -4,17 +4,17 @@ import type { ReactNode } from "react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { BuiltWith } from "./built-with";
 import { format, LANGS, type Lang } from "./i18n";
-import type { DemoManifest } from "./provenance";
+import type { AppManifest } from "./provenance";
 import { ProvenanceBadge } from "./provenance-badge";
 import { KIT_TEXT } from "./strings";
 import { useDocumentTitle } from "./use-lang";
 
 /**
- * The bar across the top of every demo: its name and tagline, a badge for each kind of non-live
- * data on screen, the demo's own controls (`actions`), the language switch and the
+ * The bar across the top of every app: its name and tagline, a badge for each kind of non-live
+ * data on screen, the app's own controls (`actions`), the language switch and the
  * "Built with Unmap" panel. It also keeps the tab title in the page's language.
  */
-export function DemoHeader({ manifest, lang, onLang, actions }: { manifest: DemoManifest; lang: Lang; onLang: (lang: Lang) => void; actions?: ReactNode }) {
+export function AppHeader({ manifest, lang, onLang, actions }: { manifest: AppManifest; lang: Lang; onLang: (lang: Lang) => void; actions?: ReactNode }) {
   useDocumentTitle(format(KIT_TEXT[lang].pageTitle, { name: manifest.name[lang] }));
   const kinds = [...new Set(manifest.provenance.map((p) => p.kind).filter((k) => k !== "live"))];
   return (

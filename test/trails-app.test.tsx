@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 
 // No key in the test build: the app must explain how to get one instead of calling the API. The
-// trail list does not need one: it is the demo's own data file.
+// trail list does not need one: it is the app's own data file.
 vi.mock("@/lib/kit/config", async (orig) => ({ ...(await orig<typeof import("@/lib/kit/config")>()), API_KEY: "" }));
 
 import { TrailsApp } from "../components/trails/trails-app";
@@ -32,7 +32,7 @@ describe("Trails without a key", () => {
     await screen.findByRole("list", { name: "Trails" });
     expect(rows()).toHaveLength(4);
     expect(screen.getByText("Not live, not for navigation")).toBeTruthy();
-    expect(screen.getByText("This demo needs an Unmap API key")).toBeTruthy();
+    expect(screen.getByText("This app needs an Unmap API key")).toBeTruthy();
     expect(screen.getByText(/Trails: Synthetic test fixture, not real data\./)).toBeTruthy();
   });
 
@@ -103,7 +103,7 @@ describe("Trails without a key", () => {
     expect(screen.getByText("Pas en temps réel, pas pour la navigation")).toBeTruthy();
     expect(screen.getByText("Sentier d'essai synthétique Alpha")).toBeTruthy();
     expect(window.location.search).toBe("?lang=fr");
-    expect(document.title).toBe("Trails · explorateur de randonnées · démo Unmap");
+    expect(document.title).toBe("Explorateur de sentiers · application Unmap");
   });
 });
 

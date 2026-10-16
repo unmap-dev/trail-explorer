@@ -16,7 +16,7 @@ export class TrailsNotFetched extends Error {
 export const TRAILS_URL = `${BASE_PATH}/data/trails.geojson`;
 
 /**
- * The trail collection, loaded after the map has started. This is the demo's own static file, not
+ * The trail collection, loaded after the map has started. This is the app's own static file, not
  * an Unmap API call. A 404 is `TrailsNotFetched`; a file that does not validate is the
  * `TrailDataError` from parseTrails, with every problem listed.
  */

@@ -13,7 +13,7 @@ const eslintConfig = defineConfig([
     // MapLibre's worker, copied in by scripts/copy-maplibre-worker.mjs.
     "public/maplibre/**",
     // Copied in unmodified by scripts/sync.mjs and held identical by test/sync.test.ts. They are
-    // linted where they live (apps/registry, demos/kit); a lint fix here would be drift.
+    // linted where they live (apps/registry, packages/app-kit); a lint fix here would be drift.
     "components/ui/**",
     "lib/map-*.ts",
     "lib/map-*.tsx",

@@ -124,7 +124,7 @@ _Written by `scripts/fetch-trails.mjs` from https://services2.arcgis.com/wCOMu5I
   avalanche hazard are not in this data and are not shown. Check
   [Parks Canada](https://parks.canada.ca/pn-np/ab/banff) before you go.
 - **Not for navigation or safety.** Lines are as Parks Canada published them on the retrieval date
-  and may be incomplete, simplified or out of date. This demo is not an offline map, a navigation
+  and may be incomplete, simplified or out of date. This app is not an offline map, a navigation
   aid or safety guidance.
 - **Road routing only.** Directions go by road to the start of the published line, which is not
   necessarily a parking area. Unmap routing does not navigate trails.
