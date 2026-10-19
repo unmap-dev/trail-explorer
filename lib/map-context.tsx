@@ -35,6 +35,12 @@ import { createMap, maplibregl, unmapStyle, type Map, type UnmapMapOptions } fro
 /** A MapLibre projection, as `getProjection()` returns it. */
 type ProjectionSpec = ReturnType<Map["getProjection"]>;
 
+/**
+ * The projection a map is drawn in when the caller does not say. Set here as well as in
+ * `@unmap/maps` so the provider owns it whichever version of the package is installed.
+ */
+const DEFAULT_PROJECTION: NonNullable<UnmapMapOptions["projection"]> = "globe";
+
 /** The default map id, used when a component does not pass one. */
 export const DEFAULT_MAP_ID = "default";
 
@@ -379,7 +385,7 @@ export function MapProvider({
   zoom,
   bearing,
   pitch,
-  projection,
+  projection = DEFAULT_PROJECTION,
   controls,
   maplibre,
   maxBounds,
@@ -399,7 +405,7 @@ export function MapProvider({
   const loadedRef = useRef(false);
   // The projection the next style load puts back: the `projection` prop, or whatever the map
   // showed when a swap began (a control such as map-controls' globe button sets it directly).
-  const projectionRef = useRef<ProjectionSpec | undefined>(undefined);
+  const projectionRef = useRef<ProjectionSpec>({ type: projection });
   // True while the provider itself moves the camera, so the move is not echoed to onViewportChange.
   const syncingRef = useRef(false);
   // Viewports reported through onViewportChange, oldest first. A parent that feeds them back
@@ -455,7 +461,7 @@ export function MapProvider({
     appliedInteractiveRef.current = now.interactive ?? maplibre?.interactive ?? true;
     appliedCooperativeRef.current = now.cooperativeGestures ?? maplibre?.cooperativeGestures ?? false;
     activeMapRef.current = map;
-    projectionRef.current = now.projection ? { type: now.projection } : undefined;
+    projectionRef.current = { type: now.projection };
     appliedStyleRef.current = unmapStyle({ key: apiKey, gateway, ...cartography });
     generationRef.current = 0;
     loadedRef.current = false;
@@ -471,8 +477,7 @@ export function MapProvider({
       generationRef.current += 1;
       // MapLibre 6 keeps the projection on the style, so a swapped style arrives flat. Put back the
       // one the map showed before the swap, or the `projection` prop if it changed since.
-      const carried = projectionRef.current;
-      if (carried) map.setProjection(carried);
+      map.setProjection(projectionRef.current);
       if (loadedRef.current) set(id, { map, ready: true, generation: generationRef.current });
     };
     const onLoad = () => {
@@ -487,14 +492,9 @@ export function MapProvider({
     // `style.load` one would undo the latest projection on the first swap. One-time listeners run
     // in registration order: these, registered after createMap's, put the latest value back: the
     // carried one, so a projection set on the map itself survives the first swap too.
-    if (now.projection) {
-      // Never undefined here: the prop set it above, and nothing unsets it while this map lives.
-      const reapply = () => {
-        if (projectionRef.current) map.setProjection(projectionRef.current);
-      };
-      map.once("style.load", reapply);
-      map.once("load", reapply);
-    }
+    const reapply = () => map.setProjection(projectionRef.current);
+    map.once("style.load", reapply);
+    map.once("load", reapply);
     const onMove = () => {
       if (syncingRef.current) return;
       report(map, latest.current.onViewportChange, reportedRef.current);
@@ -541,11 +541,11 @@ export function MapProvider({
   // Projection applies in place, and is what the next style load puts back. Before a style has
   // loaded (the first one, or mid-swap) `setProjection` throws, and the `style.load` handler
   // applies it then. `getStyle()` is undefined exactly then; `isStyleLoaded()` is also false while
-  // tiles load, and a change made then would be lost. A map that never had a projection keeps none.
+  // tiles load, and a change made then would be lost. An omitted prop is the globe.
   useEffect(() => {
     const map = activeMapRef.current;
-    if (!map || (projection === undefined && projectionRef.current === undefined)) return;
-    const next: ProjectionSpec = { type: projection ?? "mercator" };
+    if (!map) return;
+    const next: ProjectionSpec = { type: projection };
     projectionRef.current = next;
     if (generationRef.current === 0 || !map.getStyle()) return;
     map.setProjection(next);

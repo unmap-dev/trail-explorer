@@ -117,7 +117,7 @@ export interface MapProps {
    * controlled map; moves caused by these props are not reported back.
    */
   onViewportChange?: (viewport: MapViewport) => void;
-  /** `"globe"` draws the map as a sphere. Defaults to `"mercator"`, the flat map. */
+  /** `"globe"` (the default) draws the map as a sphere; `"mercator"` draws the flat map. */
   projection?: Projection;
   /**
    * On-map controls. `true` (the default) adds MapLibre's zoom and compass buttons at
