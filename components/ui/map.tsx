@@ -45,7 +45,7 @@ export interface MapProps {
   /** Gateway base URL. Defaults to the unmap production gateway. */
   gateway?: string;
   /**
-   * A named style ("base" | "muted" | "outdoor" | "blueprint" | "blush" | "orchid" | "canopy" | "lagoon" | "tropic" | "sunset" | "bold" | "pastel" | "atlas" | "swiss"), a full style URL, or a MapLibre style.
+   * A named style ("base" | "muted" | "outdoor" | "blueprint" | "blush" | "orchid" | "canopy" | "lagoon" | "tropic" | "sunset" | "bold" | "pastel" | "atlas" | "swiss" | "winter"), a full style URL, or a MapLibre style.
    * Defaults to "base".
    */
   style?: string;
