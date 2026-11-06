@@ -110,7 +110,8 @@ export function TrailsMap({ trails, selected, file, fileActive, origin, route, o
     <div role="region" aria-label={t.mapLabel} className="relative h-full min-h-0">
       <Map apiKey={API_KEY} gateway={GATEWAY} style="outdoor" lang={lang} center={START} zoom={9} controls={false} className="rounded-none" containerStyle={{ position: "absolute", inset: 0, minHeight: 0 }}>
         <Camera all={all} focus={focus} focusKey={focusKey} route={route} />
-        <MapControls position="bottom-right" />
+        {/* 3D terrain: the outdoor style carries its own elevation, so the trails lift in place. */}
+        <MapControls position="bottom-right" terrain lang={lang} />
         <AllTrails trails={trails} onSelect={onSelect} />
         {selected && !(fileActive && file)
           ? selected.lines.map((line, i) => <RouteLine key={`${selected.id}-${i}`} id={`trail-selected-${i}`} coordinates={line} />)

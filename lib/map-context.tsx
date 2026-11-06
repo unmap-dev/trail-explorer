@@ -15,6 +15,8 @@
  * - `useMapGeneration()` 0 until the first load, then +1 per completed style load. A style swap
  *                        removes every source and layer, so anything that adds them re-adds them
  *                        when this changes.
+ * - `useMapTerrain(id?)` asks the map to reload its style with or without 3D terrain
+ *                        (`terrain=on`), over the `terrain` prop. map-controls' 3D button uses it.
  * - `useResolvedMode()`  resolves `"auto"` to the page's light or dark mode, and follows it.
  *
  * This file is copied into your project by `npx shadcn add`. Edit it freely.
@@ -63,6 +65,10 @@ interface MapContextValue {
   get: (id: string) => MapEntry | undefined;
   /** Snapshot used to trigger re-renders of consumers. */
   entries: Record<string, MapEntry>;
+  /** Per map id, a control's request to draw the style on 3D terrain. Wins over the `terrain` prop. */
+  terrain: Record<string, boolean>;
+  /** Ask for the style with or without terrain; `null` follows the `terrain` prop again. */
+  requestTerrain: (id: string, on: boolean | null) => void;
 }
 
 const MapContext = createContext<MapContextValue | null>(null);
@@ -128,6 +134,7 @@ export interface MapProviderProps extends MapProviderOptions {
 function useMapStore(): MapContextValue {
   const parent = useContext(MapContext);
   const [entries, setEntries] = useState<Record<string, MapEntry>>({});
+  const [terrain, setTerrain] = useState<Record<string, boolean>>({});
   const get = useCallback((id: string) => entries[id], [entries]);
   const set = useCallback(
     (id: string, entry: MapEntry) => setEntries((prev) => ({ ...prev, [id]: entry })),
@@ -138,7 +145,23 @@ function useMapStore(): MapContextValue {
       setEntries((prev) => (prev[id]?.map === map ? { ...prev, [id]: EMPTY_ENTRY } : prev)),
     [],
   );
-  const local = useMemo<MapContextValue>(() => ({ entries, get, set, clear }), [entries, get, set, clear]);
+  const requestTerrain = useCallback(
+    (id: string, on: boolean | null) =>
+      setTerrain((prev) => {
+        if (on === null) {
+          if (!(id in prev)) return prev;
+          const rest = { ...prev };
+          delete rest[id];
+          return rest;
+        }
+        return prev[id] === on ? prev : { ...prev, [id]: on };
+      }),
+    [],
+  );
+  const local = useMemo<MapContextValue>(
+    () => ({ entries, get, set, clear, terrain, requestTerrain }),
+    [entries, get, set, clear, terrain, requestTerrain],
+  );
   return parent ?? local;
 }
 
@@ -359,6 +382,12 @@ function withGestures(raw: MaplibreOptions | undefined, options: GestureProps): 
   return Object.keys(set).length === 0 ? raw : { ...raw, ...set };
 }
 
+/** The style URL's terrain options: none at all when off, so a flat map's URL is unchanged. */
+function terrainOptions(on: boolean, exaggeration: number | undefined): { terrain?: true; exaggeration?: number } {
+  if (!on) return {};
+  return exaggeration != null ? { terrain: true, exaggeration } : { terrain: true };
+}
+
 /**
  * `hash` as MapLibre reads it: `true` for the bare `#zoom/lat/lng`, a name for
  * `#name=zoom/lat/lng`, `false` for off. An empty name is off, as it is in MapLibre.
@@ -381,6 +410,8 @@ export function MapProvider({
   theme,
   overlays,
   profile,
+  terrain,
+  exaggeration,
   center,
   zoom,
   bearing,
@@ -397,7 +428,10 @@ export function MapProvider({
   onViewportChange,
 }: MapProviderProps) {
   const store = useMapStore();
-  const { set, clear } = store;
+  const { set, clear, requestTerrain } = store;
+  // A control's request (map-controls' 3D button) wins over the prop; the gateway adds the DEM
+  // and the terrain to the style itself, so this works on every style, flat ones included.
+  const drawTerrain = store.terrain[id] ?? terrain ?? false;
   const activeMapRef = useRef<Map | null>(null);
   // The style URL the active map shows or is loading. A cartography change swaps only when it differs.
   const appliedStyleRef = useRef<string | null>(null);
@@ -426,8 +460,8 @@ export function MapProvider({
   const overlaysKey = overlays?.join(",") ?? "";
 
   // Latest props, read by effects that must not re-run when these change.
-  const latest = useRef({ style, mode, lang, theme, overlays, profile, center, zoom, bearing, pitch, projection, onViewportChange, maxBounds, minZoom, maxZoom, maplibre, interactive, cooperativeGestures });
-  latest.current = { style, mode, lang, theme, overlays, profile, center, zoom, bearing, pitch, projection, onViewportChange, maxBounds, minZoom, maxZoom, maplibre, interactive, cooperativeGestures };
+  const latest = useRef({ style, mode, lang, theme, overlays, profile, drawTerrain, exaggeration, center, zoom, bearing, pitch, projection, onViewportChange, maxBounds, minZoom, maxZoom, maplibre, interactive, cooperativeGestures });
+  latest.current = { style, mode, lang, theme, overlays, profile, drawTerrain, exaggeration, center, zoom, bearing, pitch, projection, onViewportChange, maxBounds, minZoom, maxZoom, maplibre, interactive, cooperativeGestures };
 
   // Connection: only what a style swap cannot change rebuilds the map.
   useEffect(() => {
@@ -440,6 +474,7 @@ export function MapProvider({
       theme: now.theme,
       overlays: now.overlays,
       profile: now.profile,
+      ...terrainOptions(now.drawTerrain, now.exaggeration),
     };
     const constraints = constraintsOf(now, maplibre);
     const map = createMap({
@@ -525,7 +560,7 @@ export function MapProvider({
   useEffect(() => {
     const map = activeMapRef.current;
     if (!map) return;
-    const url = unmapStyle({ key: apiKey, gateway, style, mode, lang, theme, overlays, profile });
+    const url = unmapStyle({ key: apiKey, gateway, style, mode, lang, theme, overlays, profile, ...terrainOptions(drawTerrain, exaggeration) });
     if (url === appliedStyleRef.current) return;
     appliedStyleRef.current = url;
     // Whatever the map shows now crosses the swap.
@@ -536,7 +571,15 @@ export function MapProvider({
     // A full reload, not a diff: `style.load` must fire so every layer owner re-adds its layers.
     map.setStyle(url, { diff: false });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [style, mode, lang, theme, overlaysKey, profile]);
+  }, [style, mode, lang, theme, overlaysKey, profile, drawTerrain, exaggeration]);
+
+  // A new `terrain` prop is the caller deciding again: it drops whatever a control asked for.
+  const terrainPropRef = useRef(terrain);
+  useEffect(() => {
+    if (terrainPropRef.current === terrain) return;
+    terrainPropRef.current = terrain;
+    requestTerrain(id, null);
+  }, [terrain, id, requestTerrain]);
 
   // Projection applies in place, and is what the next style load puts back. Before a style has
   // loaded (the first one, or mid-swap) `setProjection` throws, and the `style.load` handler
@@ -677,6 +720,19 @@ export function useMapReady(id: string = DEFAULT_MAP_ID): boolean {
  */
 export function useMapGeneration(id: string = DEFAULT_MAP_ID): number {
   return useEntry(id, "useMapGeneration").generation;
+}
+
+/**
+ * Ask the map for `id` to reload its style with (`true`) or without (`false`) 3D terrain, over
+ * its `terrain` prop; `null` follows the prop again. The gateway adds the elevation source and
+ * the terrain (`terrain=on`), so any style can be lifted. Tilt the camera yourself: seen from
+ * straight above, terrain looks flat.
+ */
+export function useMapTerrain(id: string = DEFAULT_MAP_ID): (on: boolean | null) => void {
+  const ctx = useContext(MapContext);
+  if (!ctx) throw new Error("useMapTerrain must be used within a <MapProvider> (rendered by <Map>).");
+  const { requestTerrain } = ctx;
+  return useCallback((on: boolean | null) => requestTerrain(id, on), [requestTerrain, id]);
 }
 
 /**

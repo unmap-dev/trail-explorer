@@ -27,7 +27,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { useMap, useMapGeneration, useMapReady } from "@/lib/map-context";
+import { useMap, useMapGeneration, useMapReady, useMapTerrain } from "@/lib/map-context";
 import { cn } from "@/lib/utils";
 
 /* map-controls:shared:start */
@@ -156,7 +156,10 @@ export interface MapControlsProps {
   fullscreen?: boolean;
   /** Switch between the flat map and the globe. */
   globe?: boolean;
-  /** Tilt the map over 3D terrain. Shown only while the style carries elevation, such as `outdoor`. */
+  /**
+   * Tilt the map over 3D terrain, on any style. A style that carries elevation (`outdoor`, `atlas`,
+   * `swiss`, `winter`) lifts in place; any other reloads with the gateway's `terrain=on`.
+   */
   terrain?: boolean;
   /** Button names, tooltips and messages. Defaults to English. */
   lang?: "en" | "fr";
@@ -197,6 +200,7 @@ export function MapControls({
   const map = useMap(mapId);
   const ready = useMapReady(mapId);
   const generation = useMapGeneration(mapId);
+  const requestTerrain = useMapTerrain(mapId);
   const copy = COPY[lang];
 
   const [bearing, setBearing] = useState(0);
@@ -206,6 +210,14 @@ export function MapControls({
   // with the globe, and never renders even once with the previous map's terrain.
   const [terrainMap, setTerrainMap] = useState<Map | null>(null);
   const terrainOn = map !== null && terrainMap === map;
+  // A style without elevation is lifted by the gateway instead (`terrain=on`, through map-context),
+  // which reloads the style. `requested` is this button's last ask, shown at once rather than
+  // after the reload; otherwise the button reads the loaded style, whose terrain the `<Map
+  // terrain>` prop may have asked for.
+  const [styleTerrain, setStyleTerrain] = useState(false);
+  const [requested, setRequested] = useState<{ map: Map; on: boolean } | null>(null);
+  const gatewayOn = map !== null && requested?.map === map ? requested.on : styleTerrain;
+  const terrainPressed = terrainOn || gatewayOn;
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [atMaxZoom, setAtMaxZoom] = useState(false);
   const [atMinZoom, setAtMinZoom] = useState(false);
@@ -266,10 +278,17 @@ export function MapControls({
     dotRef.current?.getElement().setAttribute("aria-label", COPY[lang].here);
   }, [lang]);
 
-  // Turning the `terrain` prop off forgets the press, so turning it back on starts flat.
+  // Turning the `terrain` prop off forgets the press, so turning it back on starts flat, and
+  // drops any terrain this button asked the gateway for.
+  const requestedOn = requested?.on ?? false;
   useEffect(() => {
-    if (!terrain) setTerrainMap(null);
-  }, [terrain]);
+    if (terrain) return;
+    setTerrainMap(null);
+    if (requestedOn) {
+      setRequested(null);
+      requestTerrain(null);
+    }
+  }, [terrain, requestedOn, requestTerrain]);
 
   // Globe: read the projection back from the map, as MapLibre's own GlobeControl does, so the
   // button shows the `projection` prop, a style swap and its own presses alike.
@@ -286,8 +305,8 @@ export function MapControls({
     };
   }, [map, generation]);
 
-  // Terrain is offered only while the style carries a raster-dem source. Mid-swap the previous
-  // answer stands, so the button does not blink out and back.
+  // Whether the style carries a raster-dem source decides how terrain turns on: in place from a
+  // copy of it, or through the gateway. Mid-swap the previous answer stands.
   useEffect(() => {
     if (!map) {
       setHasDem(false);
@@ -296,12 +315,29 @@ export function MapControls({
     if (ready) setHasDem(demSourceOf(map) !== null);
   }, [map, ready, generation]);
 
+  // Terrain the loaded style already draws: the gateway's, never this button's own DEM copy.
+  useEffect(() => {
+    if (!map) {
+      setStyleTerrain(false);
+      return;
+    }
+    if (!ready) return;
+    const drawn = map.getTerrain();
+    setStyleTerrain(drawn != null && drawn.source !== TERRAIN_SOURCE_ID);
+  }, [map, ready, generation]);
+
   // Terrain on: add the DEM copy and set it as terrain. A style swap drops both, and the new
   // generation puts them back when the new style has elevation too.
   useEffect(() => {
     if (!map || !ready || !terrain || !terrainOn) return;
     const dem = demSourceOf(map);
-    if (!dem) return;
+    if (!dem) {
+      // Swapped to a style without elevation: the gateway lifts this one.
+      setTerrainMap(null);
+      setRequested({ map, on: true });
+      requestTerrain(true);
+      return;
+    }
     let removed = false;
     const onRemove = () => {
       removed = true;
@@ -316,7 +352,7 @@ export function MapControls({
       if (map.getTerrain()?.source === TERRAIN_SOURCE_ID) map.setTerrain(null);
       if (map.getSource(TERRAIN_SOURCE_ID)) map.removeSource(TERRAIN_SOURCE_ID);
     };
-  }, [map, ready, generation, terrain, terrainOn]);
+  }, [map, ready, generation, terrain, terrainOn, requestTerrain]);
 
   function toggleGlobe() {
     // The projectiontransition listener updates the button; map-context carries it across a swap.
@@ -325,9 +361,21 @@ export function MapControls({
 
   function toggleTerrain() {
     if (!map) return;
-    const next = !terrainOn;
-    setTerrainMap(next ? map : null);
-    if (next && map.getPitch() < FLAT_PITCH) map.easeTo({ pitch: TERRAIN_PITCH });
+    if (terrainPressed) {
+      setTerrainMap(null);
+      if (gatewayOn) {
+        setRequested({ map, on: false });
+        requestTerrain(false);
+      }
+      return;
+    }
+    // A style with its own DEM lifts in place; any other reloads with the gateway's terrain.
+    if (hasDem) setTerrainMap(map);
+    else {
+      setRequested({ map, on: true });
+      requestTerrain(true);
+    }
+    if (map.getPitch() < FLAT_PITCH) map.easeTo({ pitch: TERRAIN_PITCH });
   }
 
   function toggleFullscreen() {
@@ -406,8 +454,8 @@ export function MapControls({
   if (globe) {
     viewControls.push({ name: "globe", label: copy.globe, icon: <GlobeIcon />, pressed: isGlobe, disabled: styleBusy, run: toggleGlobe });
   }
-  if (terrain && hasDem) {
-    viewControls.push({ name: "terrain", label: copy.terrain, icon: <MountainIcon />, pressed: terrainOn, disabled: styleBusy, run: toggleTerrain });
+  if (terrain) {
+    viewControls.push({ name: "terrain", label: copy.terrain, icon: <MountainIcon />, pressed: terrainPressed, disabled: styleBusy, run: toggleTerrain });
   }
   if (locate) {
     viewControls.push({

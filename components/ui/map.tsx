@@ -67,6 +67,18 @@ export interface MapProps {
   /** Composition preset. Not a style. Explicit overlays replace the profile list. */
   profile?: MapProfile;
   /**
+   * Draw the style on 3D terrain (`terrain=on`). Any style, flat ones included. Pair it with a
+   * `pitch`: seen from straight above, terrain looks flat. Changing it reloads the style in place.
+   */
+  terrain?: boolean;
+  /** Vertical exaggeration for `terrain`, 0.1 to 5. The gateway's default is 1. */
+  exaggeration?: number;
+  /**
+   * Raw MapLibre options, merged last when the map is created, such as `deckMapOptions` from
+   * @unmap/deck. Changing it recreates the map, so pass a constant, not a new object each render.
+   */
+  maplibre?: MapProviderOptions["maplibre"];
+  /**
    * Which accent markers and routes use by default. Defaults to `"theme"` when a `theme` is set
    * (you composed that accent on purpose) and to `"system"` otherwise.
    */
@@ -158,6 +170,9 @@ export function Map({
   theme,
   overlays,
   profile,
+  terrain,
+  exaggeration,
+  maplibre,
   accent,
   center,
   zoom,
@@ -192,6 +207,9 @@ export function Map({
     ...(lang ? { lang } : {}),
     ...(overlays && overlays.length > 0 ? { overlays } : {}),
     ...(profile ? { profile } : {}),
+    ...(terrain !== undefined ? { terrain } : {}),
+    ...(exaggeration != null ? { exaggeration } : {}),
+    ...(maplibre ? { maplibre } : {}),
     ...(center ? { center } : {}),
     ...(zoom != null ? { zoom } : {}),
     ...(bearing != null ? { bearing } : {}),

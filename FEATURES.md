@@ -7,6 +7,7 @@ What Trail Explorer does, which Unmap API does it, and what it deliberately does
 | Feature | How | Unmap |
 | --- | --- | --- |
 | Outdoor map with terrain and contours | registry `map` with the `outdoor` style, which carries a DEM hillshade, contour lines and OpenStreetMap trails; labels in English or French | Maps API (`/styles/outdoor.json`, `/tiles`, `/terrain`, `/contours`) |
+| 3D terrain | the registry `map-controls` 3D button tilts the map over the `outdoor` style's own elevation, in place, with no style reload | Maps API (`/terrain`) |
 | The trail collection | `data/trails.geojson`, Parks Canada open data fetched by `scripts/fetch-trails.mjs`; loaded after the map starts, validated, every trail with its source, licence and the method behind every number | — (open dataset) |
 | Trails on the map | every listed trail as a quiet line with its trailhead (registry `geojson-layer`); click one to choose it | — |
 | Search | by name, in the browser, accents and case ignored | — |

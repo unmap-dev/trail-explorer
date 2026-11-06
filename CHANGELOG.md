@@ -1,5 +1,58 @@
 # @unmap/app-trail-explorer
 
+## 0.0.9
+
+### Patch Changes
+
+- Updated dependencies [ad2f498]
+  - @unmap/sdk@0.27.0
+  - @unmap/maps@0.27.0
+  - @unmap/geocoding@0.27.0
+  - @unmap/routing@0.27.0
+  - @unmap/elevation@0.27.0
+
+## 0.0.8
+
+### Patch Changes
+
+- Updated dependencies [0f8a382]
+  - @unmap/sdk@0.26.0
+  - @unmap/maps@0.26.0
+  - @unmap/geocoding@0.26.0
+  - @unmap/routing@0.26.0
+  - @unmap/elevation@0.26.0
+
+## 0.0.7
+
+### Patch Changes
+
+- @unmap/sdk@0.25.1
+- @unmap/maps@0.25.1
+- @unmap/geocoding@0.25.1
+- @unmap/routing@0.25.1
+- @unmap/elevation@0.25.1
+
+## 0.0.6
+
+### Patch Changes
+
+- @unmap/sdk@0.25.0
+- @unmap/maps@0.25.0
+- @unmap/geocoding@0.25.0
+- @unmap/routing@0.25.0
+- @unmap/elevation@0.25.0
+
+## 0.0.5
+
+### Patch Changes
+
+- Updated dependencies [122faf6]
+  - @unmap/sdk@0.24.0
+  - @unmap/maps@0.24.0
+  - @unmap/geocoding@0.24.0
+  - @unmap/routing@0.24.0
+  - @unmap/elevation@0.24.0
+
 ## 0.0.4
 
 ### Patch Changes
