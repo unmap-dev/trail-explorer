@@ -1,6 +1,6 @@
 {
   "name": "unmap-trail-explorer",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "private": true,
   "description": "Trail Explorer: find a day hike, built with Unmap. An Unmap app and a starter you can clone.",
   "scripts": {
@@ -16,11 +16,11 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
-    "@unmap/elevation": "0.27.0",
-    "@unmap/geocoding": "0.27.0",
-    "@unmap/maps": "0.27.0",
-    "@unmap/routing": "0.27.0",
-    "@unmap/sdk": "0.27.0",
+    "@unmap/elevation": "0.28.0",
+    "@unmap/geocoding": "0.28.0",
+    "@unmap/maps": "0.28.0",
+    "@unmap/routing": "0.28.0",
+    "@unmap/sdk": "0.28.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "geist": "^1.7.2",
