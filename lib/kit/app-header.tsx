@@ -6,12 +6,13 @@ import { BuiltWith } from "./built-with";
 import { format, LANGS, type Lang } from "./i18n";
 import type { AppManifest } from "./provenance";
 import { ProvenanceBadge } from "./provenance-badge";
+import { ModeToggle } from "./mode-toggle";
 import { KIT_TEXT } from "./strings";
 import { useDocumentTitle } from "./use-lang";
 
 /**
  * The bar across the top of every app: its name and tagline, a badge for each kind of non-live
- * data on screen, the app's own controls (`actions`), the language switch and the
+ * data on screen, the app's own controls (`actions`), the colour mode and language switches and the
  * "Built with Unmap" panel. It also keeps the tab title in the page's language.
  */
 export function AppHeader({ manifest, lang, onLang, actions }: { manifest: AppManifest; lang: Lang; onLang: (lang: Lang) => void; actions?: ReactNode }) {
@@ -31,6 +32,7 @@ export function AppHeader({ manifest, lang, onLang, actions }: { manifest: AppMa
       </div>
       <div className="ml-auto flex items-center gap-2">
         {actions}
+        <ModeToggle lang={lang} />
         <ToggleGroup variant="outline" size="sm" spacing={0} value={[lang]} onValueChange={(v) => v[0] && onLang(v[0] as Lang)} aria-label={KIT_TEXT[lang].language}>
           {LANGS.map((l) => (
             <ToggleGroupItem key={l} value={l} aria-label={l === "en" ? "English" : "Français"}>

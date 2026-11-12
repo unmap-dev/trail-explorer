@@ -22,3 +22,11 @@ export const DOCS_URL = "https://unmap.dev/docs";
 
 /** Where a team that wants this built for them writes to. */
 export const CONTACT_URL = "mailto:hello@unmap.dev";
+
+/**
+ * The localStorage key the colour mode (system, light or dark) is kept under; the layout passes it
+ * to next-themes as `storageKey`. The apps share one origin (apps.unmap.dev), so they share the
+ * choice. It replaced next-themes' default `theme` key, which held choices made before the apps
+ * had a toggle and left visitors in dark mode with no way back to their system setting.
+ */
+export const COLOR_MODE_KEY = "unmap-color-mode";
