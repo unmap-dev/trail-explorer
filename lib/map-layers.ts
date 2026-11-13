@@ -203,6 +203,11 @@ export function useLayerSet(set: LayerSet): { map: Map | null; ready: boolean } 
 
   useEffect(() => {
     if (!map || !ready) return;
+    // `ready` lags a swap by a render: the provider calls `setStyle` in an effect that runs after
+    // ours, so a re-run in that commit (StrictMode's second pass, a key change) finds the new style
+    // still loading. `getStyle()` is undefined exactly then; its `style.load` bumps `generation`
+    // and runs this again. Not `isStyleLoaded()`, which stays false while tiles load.
+    if (!map.getStyle()) return;
     const { sourceId, source, data, layers, beforeId } = latest.current;
     let removed = false;
     const onRemove = () => {
