@@ -1,5 +1,16 @@
 # @unmap/app-trail-explorer
 
+## 0.0.16
+
+### Patch Changes
+
+- Updated dependencies [51737c1]
+  - @unmap/sdk@0.32.1
+  - @unmap/maps@0.32.1
+  - @unmap/geocoding@0.32.1
+  - @unmap/routing@0.32.1
+  - @unmap/elevation@0.32.1
+
 ## 0.0.15
 
 ### Patch Changes
