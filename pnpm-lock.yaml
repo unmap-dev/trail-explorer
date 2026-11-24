@@ -12,20 +12,20 @@ importers:
         specifier: ^1.6.0
         version: 1.6.0(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@unmap/elevation':
-        specifier: 0.35.0
-        version: 0.35.0
+        specifier: 0.36.0
+        version: 0.36.0
       '@unmap/geocoding':
-        specifier: 0.35.0
-        version: 0.35.0
+        specifier: 0.36.0
+        version: 0.36.0
       '@unmap/maps':
-        specifier: 0.35.0
-        version: 0.35.0(maplibre-gl@6.13.0)
+        specifier: 0.36.0
+        version: 0.36.0(maplibre-gl@6.13.0)
       '@unmap/routing':
-        specifier: 0.35.0
-        version: 0.35.0
+        specifier: 0.36.0
+        version: 0.36.0
       '@unmap/sdk':
-        specifier: 0.35.0
-        version: 0.35.0
+        specifier: 0.36.0
+        version: 0.36.0
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -1385,17 +1385,17 @@ packages:
     resolution: {integrity: sha512-4g3BLxfdTMy8iZG0MaBkadnlRrCJ74cQiFbyEVMrkwIoqdyaXXQM22cotDvrl4x28wgIZ9rEJRoM+mmhSJpJ1g==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@unmap/core@0.35.0':
-    resolution: {integrity: sha512-gyvyd3zvWZccgHNLPLYVCSuDCsXRGoYglWITuSZDsSkbW/oSbnq5EmFVn70eZ5KpRcZ3SPJ6apPhmUh54Vm8jg==}
+  '@unmap/core@0.36.0':
+    resolution: {integrity: sha512-PlIhL1dYx1PKW4SCKpoLeM8iDk18xTWTJDI1msdzcoNye65W8Ytf6vtqG1IUmDfTwGeW916+sBlmjxQZ/3Z8QQ==}
 
-  '@unmap/elevation@0.35.0':
-    resolution: {integrity: sha512-+LZ2i/0glJ1FmtubBqrH3VxeYyn4HYU4MZATUEltz822yo2XAa4VDWzLgn8c5VRSwYsOtQC5VBXgrvFFVkRyFw==}
+  '@unmap/elevation@0.36.0':
+    resolution: {integrity: sha512-m6ub+pl60pPuj+Qfpg1wrJnT0yByR9Bof/B8GJdoOMxBOAJQP96QGcUD1sdm0EW9PYK6YBoif0g6/rLA98PZLw==}
 
-  '@unmap/geocoding@0.35.0':
-    resolution: {integrity: sha512-4oHO5ciPbsKKK50vQ+DwO5x9KXk4ibN3Q9cl2tAP8WmGZ+hWAxdObu555LTOOAphfvGfWzP3jrr6tg06EngWSQ==}
+  '@unmap/geocoding@0.36.0':
+    resolution: {integrity: sha512-+SsTepd3bSOSqlzysL8PGfHBe7IiPaXGau8q4T99FaV2XghQDXobXil5F3ktyPRvcJkL+UJFxq6gvazsW3Roug==}
 
-  '@unmap/maps@0.35.0':
-    resolution: {integrity: sha512-WGvwsNP0DeqYg90bYS+Jnytj+xaqbGeYvSSaR3UpxGAghTd94VfrRrTVpaOWxETOxfKTY4pv46jtl1C2n7+cmw==}
+  '@unmap/maps@0.36.0':
+    resolution: {integrity: sha512-6q7qxOl4MXJH9VQPlQkSAKwLJFd0TsDUY5ozVydYrDQhXKSTrfpaSpZS8feQVeVwgIoVIVGIOSvNXM9ssx3L+Q==}
     peerDependencies:
       '@maplibre/maplibre-gl-geocoder': ^1.9.0
       maplibre-gl: ^6.9.0
@@ -1403,11 +1403,11 @@ packages:
       '@maplibre/maplibre-gl-geocoder':
         optional: true
 
-  '@unmap/routing@0.35.0':
-    resolution: {integrity: sha512-hjkrSylAvxZYqcasWqFZaRhP3q0oJtu5YYCVgTnHMeH50bQc63tLI0ZcS9IYV3pnDwbzawvRNXSplQX0W8pZ+w==}
+  '@unmap/routing@0.36.0':
+    resolution: {integrity: sha512-kyCQ/QvcObeohWhnhXu6H5mpyEmU8KtFBdwDNV9rnYieu/jr17SvGrKDu93koaVGuK96kmVkwPZu8RiUW4WBuQ==}
 
-  '@unmap/sdk@0.35.0':
-    resolution: {integrity: sha512-xdKvnVQqrxOAnOlbF68vQg/QPD7o8Ggr5vniVwlZ7SpwMweh4lMXR7+wKufC1iHFopzm9J1gDHAxeHe4evo1Tw==}
+  '@unmap/sdk@0.36.0':
+    resolution: {integrity: sha512-wyDsIzGhCsqdXEbbg8GfUn9WqenT0fYXsAlY2eT2nPQEpgeCYvThxkMNTM8XsGGOkqTWRJuyXWVnNNYGErl5vg==}
 
   '@unrs/resolver-binding-android-arm-eabi@1.12.2':
     resolution: {integrity: sha512-g5T90pqg1bo/7mytQx6F4iBNC0Wsh9cu+z9veDbFjc7HjpesJFWD7QMS0NGStXM075+7dJPPVvBbpZlnrdpi/w==}
@@ -5143,36 +5143,36 @@ snapshots:
       '@typescript-eslint/types': 8.62.1
       eslint-visitor-keys: 5.0.1
 
-  '@unmap/core@0.35.0': {}
+  '@unmap/core@0.36.0': {}
 
-  '@unmap/elevation@0.35.0':
+  '@unmap/elevation@0.36.0':
     dependencies:
-      '@unmap/core': 0.35.0
+      '@unmap/core': 0.36.0
 
-  '@unmap/geocoding@0.35.0':
+  '@unmap/geocoding@0.36.0':
     dependencies:
-      '@unmap/core': 0.35.0
+      '@unmap/core': 0.36.0
 
-  '@unmap/maps@0.35.0(maplibre-gl@6.13.0)':
+  '@unmap/maps@0.36.0(maplibre-gl@6.13.0)':
     dependencies:
       '@mapbox/vector-tile': 3.0.0
       '@types/geojson': 7946.0.16
-      '@unmap/core': 0.35.0
-      '@unmap/geocoding': 0.35.0
+      '@unmap/core': 0.36.0
+      '@unmap/geocoding': 0.36.0
       maplibre-gl: 6.13.0
       pbf: 5.1.2
 
-  '@unmap/routing@0.35.0':
+  '@unmap/routing@0.36.0':
     dependencies:
-      '@unmap/core': 0.35.0
+      '@unmap/core': 0.36.0
 
-  '@unmap/sdk@0.35.0':
+  '@unmap/sdk@0.36.0':
     dependencies:
-      '@unmap/core': 0.35.0
-      '@unmap/elevation': 0.35.0
-      '@unmap/geocoding': 0.35.0
-      '@unmap/maps': 0.35.0(maplibre-gl@6.13.0)
-      '@unmap/routing': 0.35.0
+      '@unmap/core': 0.36.0
+      '@unmap/elevation': 0.36.0
+      '@unmap/geocoding': 0.36.0
+      '@unmap/maps': 0.36.0(maplibre-gl@6.13.0)
+      '@unmap/routing': 0.36.0
       maplibre-gl: 6.13.0
     transitivePeerDependencies:
       - '@maplibre/maplibre-gl-geocoder'
