@@ -31,8 +31,8 @@ const TEXT: Record<ApiProblemKind, Record<Lang, [string, string]>> = {
     fr: ["Introuvable", "L'API n'a rien à cette adresse."],
   },
   coverage: {
-    en: ["Outside coverage", "This place or trip is outside what the API covers. Routing and search cover Canada."],
-    fr: ["Hors couverture", "Ce lieu ou ce trajet est hors de la couverture de l'API. L'itinéraire et la recherche couvrent le Canada."],
+    en: ["Outside coverage", "This place or trip is outside what the API covers. Search and routing cover Canada, and in the US ten metros, where routing is by car only."],
+    fr: ["Hors couverture", "Ce lieu ou ce trajet est hors de la couverture de l'API. La recherche et les itinéraires couvrent le Canada et, aux États-Unis, dix métropoles, où les itinéraires se font en voiture seulement."],
   },
   rate: {
     en: ["Too many requests", "The rate limit was reached. Try again in a moment."],

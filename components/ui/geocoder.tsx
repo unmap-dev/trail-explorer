@@ -9,14 +9,19 @@
  *
  * Coordinates typed into the box (`51.05, -114.07`, or `-114.07, 51.05`) are reverse geocoded
  * rather than searched; `reverseGeocode={false}` turns that off. `bbox` keeps results inside a
- * rectangle, `proximity` prefers results near a point (or the map's centre, with `"map"`), and
- * `renderResult` draws each option your way.
+ * rectangle, `proximity` prefers results near a point (or the map's centre, with `"map"`),
+ * `country` picks the countries searched, and `renderResult` draws each option your way.
+ *
+ * A search with no `country` is Canadian unless its focus point is in the US: with
+ * `proximity="map"`, a map over Seattle searches the US. `country="US"` always searches the US,
+ * and `country={["CA", "US"]}` both, merged. In the US, addresses and places cover ten metros and
+ * place names cover the whole country.
  *
  * Copied into your project by `npx shadcn add`. Edit freely.
  */
 
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { Geocoder as GeocoderClient, type GeocodeResult } from "@unmap/geocoding";
+import { Geocoder as GeocoderClient, type CountryScopeOption, type GeocodeResult } from "@unmap/geocoding";
 import {
   Combobox,
   ComboboxContent,
@@ -35,8 +40,9 @@ export const BBOX_OVERFETCH = 4;
 /**
  * Coordinates typed into the search box, as [longitude, latitude], or null when the text is not a
  * pair. Read as `lat, lng` (the order Google and Mapbox use), except that a first number beyond 90,
- * or a negative first and a positive second, is read as `lng, lat`: all of Canada has a positive
- * latitude and a negative longitude, so `-114.07, 51.05` and `51.05, -114.07` are both Calgary.
+ * or a negative first and a positive second, is read as `lng, lat`: all of Canada and the
+ * contiguous US has a positive latitude and a negative longitude, so `-114.07, 51.05` and
+ * `51.05, -114.07` are both Calgary.
  *
  * Two numbers split by a comma, a semicolon, or spaces. A decimal point or a French decimal comma
  * both work, but not mixed in one pair. The comma is the hard case:
@@ -105,9 +111,53 @@ function wrapLongitude(lng: number): number {
   return lng >= -180 && lng <= 180 ? lng : ((((lng + 180) % 360) + 360) % 360) - 180;
 }
 
-/** The gateway's answer for a point outside Canada: status 422, code `outside_coverage`. */
+/** The gateway's answer for a point or a `country` outside search coverage: status 422, code `outside_coverage`. */
 export function isOutsideCoverage(error: unknown): boolean {
   return typeof error === "object" && error !== null && (error as { code?: unknown }).code === "outside_coverage";
+}
+
+/** A `country` prop as a primitive ("" for none), so an inline list does not search again on every render. */
+export function countryKey(country: string | readonly string[] | undefined): string {
+  return country == null ? "" : typeof country === "string" ? country : country.join(",");
+}
+
+/**
+ * The countries a search can answer from, for the line under the box: `country` when given;
+ * Canada and the US with `proximity="map"`, where the map's centre decides; else Canada, which is
+ * what a search with no `country` and no point in the US searches. A fixed `proximity` point
+ * counts as Canada here: pass `country` when it is not.
+ */
+export function searchCountries(country: string, proximity: string): string[] {
+  if (country) return country.split(",");
+  return proximity === "map" ? ["CA", "US"] : ["CA"];
+}
+
+const COUNTRY_NAMES: Record<"en" | "fr", Record<string, string>> = {
+  en: { CA: "Canada", US: "the US", MX: "Mexico" },
+  fr: { CA: "le Canada", US: "les États-Unis", MX: "le Mexique" },
+};
+
+/** "Search covers Canada and the US." in the box's language. */
+export function coverageLine(countries: readonly string[], lang: "en" | "fr" | undefined): string {
+  const fr = lang === "fr";
+  const names = countries.map((code) => COUNTRY_NAMES[fr ? "fr" : "en"][code] ?? code);
+  const and = fr ? " et " : " and ";
+  const list = names.length > 1 ? `${names.slice(0, -1).join(", ")}${and}${names[names.length - 1]}` : (names[0] ?? "");
+  return fr ? `La recherche couvre ${list}.` : `Search covers ${list}.`;
+}
+
+/**
+ * The line under the box. With `proximity="map"` and no `country`, the map's centre decides the
+ * country at the moment of each search, so the line says that rather than naming both: a map over
+ * Calgary searches Canada only, and saying "Canada and the US" there would be wrong.
+ */
+export function searchCoverageLine(country: string, proximity: string, lang: "en" | "fr" | undefined): string {
+  if (!country && proximity === "map") {
+    return lang === "fr"
+      ? "La recherche couvre le Canada, ou les États-Unis quand la carte les montre."
+      : "Search covers Canada, or the US when the map is over it.";
+  }
+  return coverageLine(searchCountries(country, proximity), lang);
 }
 // --- end coordinate helpers ---
 
@@ -141,13 +191,19 @@ export interface GeocoderProps {
    * `"map"`. Moves the ranking only; nothing is excluded.
    */
   proximity?: [number, number] | "map";
+  /**
+   * The countries searched: `"CA"`, `"US"`, or both as `["CA", "US"]`. A hard filter. Omitted, the
+   * search is Canadian unless its `proximity` point is in the US. A typed coordinate is looked up
+   * wherever it is.
+   */
+  country?: CountryScopeOption;
   /** Draws an option's content. Defaults to the name over the city. */
   renderResult?: (result: GeocodeResult) => ReactNode;
-  /** What the list says when a search finds nothing. Defaults to a line saying search covers Canada. */
+  /** What the list says when a search finds nothing. Defaults to a line naming the countries searched. */
   emptyText?: string;
   /**
    * What the list says when a search fails, from the error (a gateway error carries `status` and
-   * `code`). Defaults to the outside-Canada line for a point abroad, else a generic failure line.
+   * `code`). Defaults to the outside-coverage line for a point abroad, else a generic failure line.
    */
   errorText?: (error: unknown) => string;
   className?: string;
@@ -165,6 +221,7 @@ export function Geocoder({
   reverseGeocode = true,
   bbox,
   proximity,
+  country,
   renderResult,
   emptyText,
   errorText,
@@ -193,17 +250,12 @@ export function Geocoder({
   const reducedMotion =
     typeof window !== "undefined" &&
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const coverageHint = lang === "fr" ? "La recherche couvre le Canada." : "Search covers Canada.";
-  const emptyHint =
-    lang === "fr"
-      ? "Aucun lieu trouvé. La recherche couvre le Canada."
-      : "No places found. Search covers Canada.";
-  const outsideHint =
-    lang === "fr"
-      ? "Ce point est hors du Canada. La recherche couvre le Canada."
-      : "That point is outside Canada. Search covers Canada.";
   const boxKey = bbox ? bbox.join(",") : "";
   const focusKey = proximityKey(proximity);
+  const countriesKey = countryKey(country);
+  const coverageHint = searchCoverageLine(countriesKey, focusKey, lang);
+  const emptyHint = `${lang === "fr" ? "Aucun lieu trouvé." : "No places found."} ${coverageHint}`;
+  const outsideHint = `${lang === "fr" ? "Ce lieu est hors de la couverture de la recherche." : "That place is outside search coverage."} ${coverageLine(["CA", "US"], lang)}`;
 
   useEffect(() => {
     const q = requestQuery.trim();
@@ -239,6 +291,7 @@ export function Geocoder({
             limit: box ? Math.min(50, limit * BBOX_OVERFETCH) : limit,
             lang,
             ...(focus ? { focus } : {}),
+            ...(countriesKey ? { country: countriesKey.split(",") as CountryScopeOption } : {}),
             signal: controller.signal,
           });
           hits = box ? found.filter((hit) => inBox(hit, box)).slice(0, limit) : found;
@@ -266,7 +319,7 @@ export function Geocoder({
       clearTimeout(timer);
       controller?.abort();
     };
-  }, [requestQuery, requestVersion, client, limit, lang, reverseGeocode, boxKey, focusKey, outsideHint]);
+  }, [requestQuery, requestVersion, client, limit, lang, reverseGeocode, boxKey, focusKey, countriesKey, outsideHint]);
 
   function dismiss() {
     dismissedRef.current = true;
